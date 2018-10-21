@@ -1,0 +1,50 @@
+{
+  "name": "@cantremember/mongodb-sandbox",
+  "version": "0.0.1",
+  "description": "A Sandbox that launches a stand-alone MongoDB instance for use within a Test Suite.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mongodb",
+    "sandbox",
+    "testing"
+  ],
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "lib/"
+  ],
+  "engines": {
+    "node": ">=6.0"
+  },
+  "scripts": {
+    "ci": "npm run test  &&  npm run lint",
+    "lint": "eslint lib/ test/",
+    "preversion": "npm run ci",
+    "test": "tape 'test/**/*.test.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cantremember/mongodb-sandbox.git"
+  },
+  "author": "Daniel M Foley <admin@cantremember.com> (http://cantremember.com/)",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/cantremember/mongodb-sandbox/issues"
+  },
+  "homepage": "https://github.com/cantremember/mongodb-sandbox#readme",
+  "dependencies": {
+    "@cantremember/mongodb-down-load": "^2.3.1",
+    "mongodb": "^3.1.6",
+    "mongodb-prebuilt": "^6.3.6",
+    "mongodb-topology-manager": "^2.1.0",
+    "portfinder": "^1.0.17"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "sinon": "^6.1.4",
+    "tape": "^4.9.1"
+  }
+}

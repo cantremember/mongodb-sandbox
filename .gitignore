@@ -1,0 +1,14 @@
+build
+
+# ignore Node.js
+node_modules/
+.node_modules
+npm-debug.log
+
+# ignore Apple DS Store
+*.DS_Store
+Thumbs.db
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
