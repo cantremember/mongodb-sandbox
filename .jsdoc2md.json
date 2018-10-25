@@ -1,0 +1,19 @@
+{
+  "files": [
+    "index.js",
+    "lib/**/**.js"
+  ],
+
+  "template": ".jsdoc2md.template",
+  "heading-depth": 2,
+  "separators": false,
+  "no-cache": true,
+
+  "module-index-format": "dl",
+  "global-index-format": "dl",
+  "param-list-format": "list",
+  "property-list-format": "list",
+  "member-index-format": "list",
+
+  "example-lang": "none"
+}

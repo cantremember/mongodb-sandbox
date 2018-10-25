@@ -1,0 +1,63 @@
+# JSDoc for mongodb-sandbox
+
+Launch a stand-alone MongoDB Server for use within a Test Suite.
+
+
+## Examples
+
+
+Embed a [Lifecycle](#Lifecycle) into the [mocha](https://github.com/mochajs/mocha) Test Framework,
+backed by MongoDB 3.6.8 [Sandbox](#Sandbox) installed to a location re-usable across multiple Test Suite executions.
+
+> A more flushed-out version of this Example can be found in the [README](./README.md#an-example).
+
+```javascript
+const { createSandbox } = require('@cantremember/mongodb-sandbox');
+
+
+const lifecycle = createSandbox({
+  version: '3.6.8',
+}).lifecycle();
+
+before(lifecycle.beforeAll);
+beforeEach(lifecycle.beforeEach);
+afterEach(lifecycle.afterEach);
+after(lifecycle.afterAll);
+```
+
+
+Programatically create, start and stop a MongoDB 3.6.8 [Sandbox](#Sandbox)
+
+```javascript
+const { createSandbox } = require('@cantremember/mongodb-sandbox');
+
+const sandbox = createSandbox({
+  version: '3.6.8',
+});
+
+sandbox.start()
+.then(() => {
+  // use it in some fashion
+
+  // and when you're done,
+  return sandbox.stop();
+});
+```
+
+
+A script to install the latest version of MongoDB to a re-usable location,
+out-of-band from your Test Suite.
+
+```javascript
+#!/usr/bin/env node
+const { installSandbox } = require('@cantremember/mongodb-sandbox');
+
+installSandbox({
+  downloadDir: '/usr/local/mongodb-sandbox/latest',
+})
+.then((sandbox) => {
+  console.log('installed the latest version of MongoDB.');
+});
+```
+
+{{>main}}
