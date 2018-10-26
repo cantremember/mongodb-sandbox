@@ -2,11 +2,8 @@
 
 Launch a stand-alone MongoDB Server for use within a Test Suite.
 
-
-## TODO
-
-Test Suite
-travis-ci
+  [![Build status][travis-img]][travis-url]
+  [![License][license-img]][license-url]
 
 
 ## Purpose
@@ -125,3 +122,9 @@ So *that's* why.
 ## License
 
 WTFPL.  Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+
+[travis-img]: https://img.shields.io/travis/cantremember/mongodb-sandbox.svg?style=flat-square
+[travis-url]: https://travis-ci.org/cantremember/mongodb-sandbox
+[license-img]: https://img.shields.io/badge/license-WTFPL-blue.svg?style=flat-square
+[license-url]: http://www.wtfpl.net/
