@@ -1,14 +1,15 @@
 {
   "name": "@cantremember/mongodb-sandbox",
   "version": "0.0.1",
-  "description": "Launch a stand-alone MongoDB Server for use within a Test Suite.",
+  "description": "Launch a stand-alone MongoDB Topology for use within a Test Suite.",
   "publishConfig": {
     "access": "public"
   },
   "keywords": [
     "mongodb",
     "sandbox",
-    "testing"
+    "testing",
+    "topology"
   ],
   "main": "index.js",
   "files": [

@@ -13,6 +13,8 @@ function createSandbox(config) {
 }
 
 /**
+ * Installs MongoDB support for a Sandbox.
+ *
  * @params {Sandbox.config} [config] a Sandbox configuration
  * @returns {Promise<Sandbox>} a Promise resolving
  *   a Sandbox instance which has been installed.

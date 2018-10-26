@@ -1,6 +1,6 @@
 # JSDoc for mongodb-sandbox
 
-Launch a stand-alone MongoDB Server for use within a Test Suite.
+Launch a stand-alone MongoDB Topology for use within a Test Suite.
 
 
 ## Examples
@@ -67,7 +67,7 @@ installSandbox({
 <dd><p>A simple encapsulation of methods for a Test Framework lifecycle.</p>
 </dd>
 <dt><a href="#Sandbox">Sandbox</a></dt>
-<dd><p>A Sandbox that launches a stand-alone MongoDB Server for use within a Test Suite.</p>
+<dd><p>A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Suite.</p>
 </dd>
 </dl>
 
@@ -78,7 +78,8 @@ installSandbox({
 <dd><p>A Factory method for a Sandbox.</p>
 </dd>
 <dt><a href="#installSandbox">installSandbox()</a> ⇒ <code><a href="#Sandbox">Promise.&lt;Sandbox&gt;</a></code></dt>
-<dd></dd>
+<dd><p>Installs MongoDB support for a Sandbox.</p>
+</dd>
 </dl>
 
 <a name="Lifecycle"></a>
@@ -129,7 +130,7 @@ To be invoked at the **end** of the global Test Framework lifecycle.
 <a name="Sandbox"></a>
 
 ## Sandbox
-A Sandbox that launches a stand-alone MongoDB Server for use within a Test Suite.
+A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Suite.
 
 **Kind**: global class  
 
@@ -254,6 +255,8 @@ A Factory method for a Sandbox.
 <a name="installSandbox"></a>
 
 ## installSandbox() ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
+Installs MongoDB support for a Sandbox.
+
 **Kind**: global function  
 **Returns**: [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox) - a Promise resolving
   a Sandbox instance which has been installed.  

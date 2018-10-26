@@ -1,6 +1,6 @@
 # JSDoc for mongodb-sandbox
 
-Launch a stand-alone MongoDB Server for use within a Test Suite.
+Launch a stand-alone MongoDB Topology for use within a Test Suite.
 
 
 ## Examples
