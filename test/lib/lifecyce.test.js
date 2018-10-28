@@ -275,7 +275,7 @@ describe('Lifecycle', () => {
     it('ensures a minimum runtime', () => {
       sandboxMock.restore();
 
-      // a real instance holding a `config`
+      // a real instance holding `options`
       const sandbox = new Sandbox({
         minimumUptimeMs: 50,
       });
@@ -292,7 +292,7 @@ describe('Lifecycle', () => {
     });
 
     it('stops its Sandbox', () => {
-      expect(sandboxMock.object.config).to.equal(undefined);
+      expect(sandboxMock.object.options).to.equal(undefined);
 
       return lifecycle.afterAll() // @see sandboxMock.verify();
       .then(() => {

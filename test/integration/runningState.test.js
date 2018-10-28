@@ -11,7 +11,7 @@ describe('examining the running state', () => {
 
 
   it('connected to the specified database', () => {
-    const { database } = sandbox.options;
+    const { database } = sandbox.config;
     expect(database).to.equal('mongodb-sandbox');
 
     return sandbox.client()
@@ -27,12 +27,12 @@ describe('examining the running state', () => {
     const { _mongoBins } = sandbox;
     const { mongoDBDownload } = _mongoBins.mongoDBPrebuilt;
 
+    // it('expects `mongodb-download` to create its own download sub-directory')
     const downloadDir = mongoDBDownload.getDownloadDir();
     const pathSegments = downloadDir.split(path.sep);
-
-    // it('expects `mongodb-download` to create its own download sub-directory')
     expect(pathSegments.pop()).to.equal('mongodb-download');
-    const remaining = pathSegments.join(path.sep);
-    expect(remaining).to.equal(sandbox.config.downloadDir);
+
+    const useful = pathSegments.slice(pathSegments.length - 3);
+    expect(useful).to.deep.equal([ 'mongodb-sandbox', 'build', 'mongodb-3.6.8' ]);
   });
 });

@@ -5,9 +5,11 @@ Launch a stand-alone MongoDB Topology for use within a Test Suite.
 
 ## Examples
 
+`mongodb-sandbox` is Promise-based API.
+
 
 Embed a [Lifecycle](#Lifecycle) into the [mocha](https://github.com/mochajs/mocha) Test Framework,
-backed by MongoDB 3.6.8 [Sandbox](#Sandbox) installed to a location re-usable across multiple Test Suite executions.
+backed by MongoDB 3.4.2 [Sandbox](#Sandbox) installed to a location re-usable across multiple Test Suite executions.
 
 > A more flushed-out version of this Example can be found in the [README](./README.md#an-example).
 
@@ -16,7 +18,7 @@ const { createSandbox } = require('@cantremember/mongodb-sandbox');
 
 
 const lifecycle = createSandbox({
-  version: '3.6.8',
+  version: '3.4.2',
 }).lifecycle();
 
 before(lifecycle.beforeAll);
@@ -45,20 +47,35 @@ sandbox.start()
 ```
 
 
-A script to install the latest version of MongoDB to a re-usable location,
+A script to install the latest version of MongoDB to back a Sandbox,
 out-of-band from your Test Suite.
 
 ```javascript
 #!/usr/bin/env node
 const { installSandbox } = require('@cantremember/mongodb-sandbox');
 
-installSandbox({
-  downloadDir: '/usr/local/mongodb-sandbox/latest',
-})
+installSandbox()
 .then((sandbox) => {
   console.log('installed the latest version of MongoDB.');
 });
 ```
+
+
+## Options
+
+The configuration properties themselves are documented in [Sandbox.options](#Sandbox.options).
+
+Beyond the properties a [Sandbox](#Sandbox) leverages internally,
+the you may provide any options passed to a `MongoDBDownload` instance
+from the [mongodb-download](https://github.com/winfinit/mongodb-download) module.
+
+The most useful of those properties are:
+
+- `version` - a specific MongoDB version, eg. '3.4.2';
+  *default* = 'latest'
+- `downloadDir` - the directory where the MongoDB binaries will be downloaded & installed.
+  *default* = a cache local to the `mongodb-sandbox` module.
+
 
 ## Classes
 
@@ -90,10 +107,32 @@ A simple encapsulation of methods for a Test Framework lifecycle.
 **Kind**: global class  
 
 * [Lifecycle](#Lifecycle)
+    * [lifecycle.sandbox](#Lifecycle+sandbox)
+    * [lifecycle.context](#Lifecycle+context)
     * [lifecycle.beforeAll()](#Lifecycle+beforeAll) ⇒ [<code>Promise.&lt;Lifecycle&gt;</code>](#Lifecycle)
     * [lifecycle.beforeEach()](#Lifecycle+beforeEach) ⇒ [<code>Promise.&lt;Lifecycle&gt;</code>](#Lifecycle)
     * [lifecycle.afterEach()](#Lifecycle+afterEach) ⇒ [<code>Promise.&lt;Lifecycle&gt;</code>](#Lifecycle)
     * [lifecycle.afterAll()](#Lifecycle+afterAll) ⇒ [<code>Promise.&lt;Lifecycle&gt;</code>](#Lifecycle)
+
+<a name="Lifecycle+sandbox"></a>
+
+### lifecycle.sandbox
+The Sandbox passed to the constructor.
+
+**Kind**: instance property of [<code>Lifecycle</code>](#Lifecycle)  
+**Properties**
+
+-  [<code>Sandbox</code>](#Sandbox)  
+
+<a name="Lifecycle+context"></a>
+
+### lifecycle.context
+The Test Framework context passed to the constructor.
+
+**Kind**: instance property of [<code>Lifecycle</code>](#Lifecycle)  
+**Properties**
+
+-  <code>Object</code>  
 
 <a name="Lifecycle+beforeAll"></a>
 
@@ -135,8 +174,9 @@ A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Sui
 **Kind**: global class  
 
 * [Sandbox](#Sandbox)
+    * [sandbox.options](#Sandbox+options)
     * [sandbox.isRunning](#Sandbox+isRunning) : <code>Boolean</code>
-    * [sandbox.options](#Sandbox+options) : <code>Object</code>
+    * [sandbox.config](#Sandbox+config) : <code>Object</code>
     * [sandbox.start()](#Sandbox+start) ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
     * [sandbox.stop()](#Sandbox+stop) ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
     * [sandbox.install()](#Sandbox+install) ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
@@ -145,7 +185,17 @@ A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Sui
     * [sandbox.lifecycle()](#Sandbox+lifecycle) ⇒ [<code>Promise.&lt;Lifecycle&gt;</code>](#Lifecycle)
     * [sandbox.client()](#Sandbox+client) ⇒ <code>Promise.&lt;MongoClient&gt;</code>
     * [sandbox.newClient()](#Sandbox+newClient) ⇒ <code>Promise.&lt;MongoClient&gt;</code>
-    * [Sandbox.config](#Sandbox.config) : <code>Object</code>
+    * [Sandbox.options](#Sandbox.options) : <code>Object</code>
+
+<a name="Sandbox+options"></a>
+
+### sandbox.options
+The configuration options passed to the constructor.
+
+**Kind**: instance property of [<code>Sandbox</code>](#Sandbox)  
+**Properties**
+
+-  [<code>options</code>](#Sandbox.options)  
 
 <a name="Sandbox+isRunning"></a>
 
@@ -153,10 +203,10 @@ A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Sui
 `true` if the Sandbox is running.
 
 **Kind**: instance property of [<code>Sandbox</code>](#Sandbox)  
-<a name="Sandbox+options"></a>
+<a name="Sandbox+config"></a>
 
-### sandbox.options : <code>Object</code>
-Options for connecting to the MongoDB Topology backing a running Sandbox.
+### sandbox.config : <code>Object</code>
+Configuration properties for connecting to the MongoDB Topology backing a running Sandbox.
 
 - host
 - port
@@ -221,17 +271,18 @@ The Connections backing all returned Clients will be closed automatically upon `
 **Kind**: instance method of [<code>Sandbox</code>](#Sandbox)  
 **Returns**: <code>Promise.&lt;MongoClient&gt;</code> - a Promise resolving
   a MongoDB Client connected to the Sandbox.  
-<a name="Sandbox.config"></a>
+<a name="Sandbox.options"></a>
 
-### Sandbox.config : <code>Object</code>
-Configuration for a Sandbox.
+### Sandbox.options : <code>Object</code>
+Configuration options for constructing a Sandbox.
 
 Beyond the properties called out below,
-the configuration may include any options passed to a `MongoDBDownload` instance
+the you may provide any options passed to a `MongoDBDownload` instance
 from the [mongodb-download](https://github.com/winfinit/mongodb-download) module,
 eg. `{ version, downloadDir }`, etc.
 
 **Kind**: static typedef of [<code>Sandbox</code>](#Sandbox)  
+**See**: {Object} https://github.com/cantremember/mongodb-sandbox/JSDOC.md#options  
 **Properties**
 
 - host <code>String</code> - an alternate `bind_ip` for the `mongod` Daemon, eg. '0.0.0.0';
@@ -251,7 +302,7 @@ A Factory method for a Sandbox.
 
 **Kind**: global function  
 **Returns**: [<code>Sandbox</code>](#Sandbox) - a MongoDB Sandbox instance  
-**Params**: [<code>config</code>](#Sandbox.config) [config] a Sandbox configuration  
+**Params**: [<code>options</code>](#Sandbox.options) [options] Sandbox configuration options  
 <a name="installSandbox"></a>
 
 ## installSandbox() ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
@@ -260,4 +311,4 @@ Installs MongoDB support for a Sandbox.
 **Kind**: global function  
 **Returns**: [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox) - a Promise resolving
   a Sandbox instance which has been installed.  
-**Params**: [<code>config</code>](#Sandbox.config) [config] a Sandbox configuration  
+**Params**: [<code>options</code>](#Sandbox.options) [options] Sandbox configuration options  

@@ -9,7 +9,7 @@ const  {
   Sandbox,
 } = index;
 
-const CONFIG = Object.freeze({});
+const OPTIONS = Object.freeze({});
 
 
 describe('index', () => {
@@ -33,10 +33,10 @@ describe('index', () => {
 
   describe('createSandbox', () => {
     it('returns a new Sandbox', () => {
-      const sandbox = createSandbox(CONFIG);
+      const sandbox = createSandbox(OPTIONS);
 
       expect(sandbox).to.be.instanceOf(Sandbox);
-      expect(sandbox.config).to.equal(CONFIG);
+      expect(sandbox.options).to.equal(OPTIONS);
     });
   });
 
@@ -47,10 +47,10 @@ describe('index', () => {
         return Promise.resolve(this); // eslint-disable-line no-invalid-this
       });
 
-      return installSandbox(CONFIG)
+      return installSandbox(OPTIONS)
       .then((sandbox) => {
         expect(sandbox).to.be.instanceOf(Sandbox);
-        expect(sandbox.config).to.equal(CONFIG);
+        expect(sandbox.options).to.equal(OPTIONS);
 
         expect(sandbox.install.callCount).to.equal(undefined); // because of pre-binding
         expect(Sandbox.prototype.install.callCount).to.equal(1);

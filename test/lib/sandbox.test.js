@@ -10,11 +10,11 @@ const {
 const { MongoBins } = require('mongodb-prebuilt');
 // TODO:  restore `require('mongodb-download')`
 const { MongoDBDownload } = require('@cantremember/mongodb-down-load');
-const { Server: TopologyServer } = require('mongodb-topology-manager');
 
 const Lifecycle = require('../../lib/lifecycle');
 const Sandbox = require('../../lib/sandbox');
 const portUtils = require('../../lib/port');
+const topologyServer = require('../../lib/topology-server');
 
 // stubbable skeleton vs. a pure Mock;
 //   we also need the named constant for #isRunning purposes
@@ -57,14 +57,14 @@ describe('Sandbox', () => {
 
   describe('constructor', () => {
     it('populates the instance', () => {
-      const CONFIG = Object.freeze({ config: true });
-      sandbox = new Sandbox(CONFIG);
+      const OPTIONS = Object.freeze({ options: true });
+      sandbox = new Sandbox(OPTIONS);
 
-      expect(sandbox.config).to.equal(CONFIG);
+      expect(sandbox.options).to.equal(OPTIONS);
     });
 
-    it('ensures a config Object', () => {
-      expect(sandbox.config).to.deep.equal({});
+    it('ensures an options Object', () => {
+      expect(sandbox.options).to.deep.equal({});
     });
 
     it('pre-binds its methods', () => {
@@ -126,12 +126,12 @@ describe('Sandbox', () => {
   });
 
 
-  describe('#options', () => {
+  describe('#config', () => {
     it('fails unless the Sandbox is running', () => {
       expect(sandbox.isRunning).to.equal(false);
 
       expect(() => {
-        return sandbox.options;
+        return sandbox.config;
       }).to.throw(/not running/);
     });
 
@@ -143,7 +143,7 @@ describe('Sandbox', () => {
       sandbox._topology = TOPOLOGY;
       sandbox._port = PORT;
 
-      expect(sandbox.options).to.deep.equal({
+      expect(sandbox.config).to.deep.equal({
         host: HOST,
         database: DATABASE,
         port: PORT,
@@ -152,11 +152,11 @@ describe('Sandbox', () => {
     });
 
     it('falls back to defaults', () => {
-      expect(sandbox.config).to.deep.equal({});
+      expect(sandbox.options).to.deep.equal({});
       sandbox._topology = TOPOLOGY;
       sandbox._port = PORT; // Topology + port go hand-in-hand
 
-      expect(sandbox.options).to.deep.equal({
+      expect(sandbox.config).to.deep.equal({
         host: '127.0.0.1',
         database: 'mongodb-sandbox',
         port: PORT,
@@ -180,7 +180,7 @@ describe('Sandbox', () => {
       sinonSandbox.stub(Sandbox.prototype, 'install').resolves();
       sinonSandbox.stub(portUtils, 'derivePort').resolves(PORT);
       sinonSandbox.stub(MongoBins.prototype, 'getCommand').resolves(MONGOD_BIN_PATH);
-      sinonSandbox.stub(Sandbox.prototype, '_deriveTopology').resolves(TOPOLOGY);
+      sinonSandbox.stub(topologyServer, 'deriveTopology').resolves(TOPOLOGY);
       sinonSandbox.stub(TOPOLOGY, 'start').resolves();
 
       // reconstruct after the stubbing
@@ -299,8 +299,8 @@ describe('Sandbox', () => {
       .then(() => {
         expect(sandbox._topology).to.equal(TOPOLOGY);
 
-        expect(Sandbox.prototype._deriveTopology.callCount).to.equal(1);
-        expect(Sandbox.prototype._deriveTopology.calledWith(MONGOD_BIN_PATH)).to.equal(true);
+        expect(topologyServer.deriveTopology.callCount).to.equal(1);
+        expect(topologyServer.deriveTopology.calledWith(sandbox, MONGOD_BIN_PATH)).to.equal(true);
       });
     });
 
@@ -575,7 +575,7 @@ describe('Sandbox', () => {
 
       sinonSandbox.stub(Sandbox.prototype, 'client').resolves(clientMock.object);
 
-      // reconstruct with configuration
+      // reconstruct with options
       sandbox = new Sandbox({
         database: DATABASE,
       });
@@ -649,7 +649,7 @@ describe('Sandbox', () => {
 
       sinonSandbox.stub(Sandbox.prototype, 'client').resolves(clientMock.object);
 
-      // reconstruct with configuration
+      // reconstruct with options
       sandbox = new Sandbox({
         database: DATABASE,
       });
@@ -850,14 +850,14 @@ describe('Sandbox', () => {
 
 
   describe('#_reset', () => {
-    const CONFIG = Object.freeze({ // implicit mutation test
+    const OPTIONS = Object.freeze({ // implicit mutation test
       host: HOST,
       basePort: PORT,
       version: 'VERSION',
     });
 
     beforeEach(() => {
-      sandbox = new Sandbox(CONFIG);
+      sandbox = new Sandbox(OPTIONS);
     });
 
     it('resets the local state of the instance', () => {
@@ -869,142 +869,6 @@ describe('Sandbox', () => {
       expect(sandbox._topology).to.equal(undefined);
       expect(sandbox._client).to.equal(undefined);
       expect(sandbox._clients).to.deep.equal([]);
-    });
-
-    it('constructs a configured winfinit module hierarchy', () => {
-      const { mongoDBDownload } = sandbox._mongoBins.mongoDBPrebuilt;
-      expect(mongoDBDownload).to.not.equal(undefined);
-
-      const { options } = mongoDBDownload;
-      expect(options).to.not.have.any.keys([ 'host', 'basePort' ]);
-      expect(options).to.include.all.keys([ 'version' ]);
-      expect(options.version).to.equal('VERSION');
-    });
-  });
-
-
-  describe('#_deriveTopologyConfigArgs', () => {
-    let mongoDBDownloadMock;
-
-    beforeEach(() => {
-      mongoDBDownloadMock = sinonSandbox.mock(MongoDBDownload.prototype);
-
-      // a winfinit module hierarchy
-      sandbox._mongoBins = {
-        mongoDBPrebuilt: {
-          mongoDBDownload: mongoDBDownloadMock.object,
-        },
-      };
-    });
-
-    afterEach(() => {
-      mongoDBDownloadMock.verify();
-    });
-
-
-    it('requires a port to have been derived for the Sandbox', () => {
-      expect(sandbox._port).to.equal(undefined);
-
-      expect(() => {
-        return sandbox._deriveTopologyConfigArgs();
-      }).to.throw(/port has not been derived/);
-    });
-
-    it('leverages configuration', () => {
-      sandbox = new Sandbox({
-        host: HOST,
-      });
-      sandbox._port = PORT;
-
-      mongoDBDownloadMock.expects('getDownloadDir').once().returns('/getDownloadDir');
-
-      const configArgs = sandbox._deriveTopologyConfigArgs();
-      expect(configArgs).to.deep.equal([
-        {
-          bind_ip: HOST,
-          port: PORT,
-          dbpath: '/getDownloadDir/mongodb-sandbox-server-23',
-        },
-      ]);
-    });
-
-    it('falls back to defaults', () => {
-      // well ... except for the derived port.  we need that.
-      sandbox._port = PORT;
-
-      mongoDBDownloadMock.expects('getDownloadDir').once().returns('/getDownloadDir');
-
-      const configArgs = sandbox._deriveTopologyConfigArgs();
-      expect(configArgs).to.deep.equal([
-        {
-          bind_ip: '127.0.0.1',
-          port: PORT,
-          dbpath: '/getDownloadDir/mongodb-sandbox-server-23',
-        },
-      ]);
-    });
-  });
-
-
-  describe('#_deriveTopology', () => {
-    const OPTIONS = Object.freeze({
-      // things it would really expect
-      //   and auto-default it we just passed { options: true }
-      bind_ip: HOST,
-      port: PORT,
-      dbpath: '/path/to/database',
-    });
-    const CLIENT_OPTIONS = Object.freeze({ clientOptions: true });
-
-    beforeEach(() => {
-      const CONFIG_ARGS = [ OPTIONS, CLIENT_OPTIONS ];
-
-      // assume Happy Path
-      sinonSandbox.stub(Sandbox.prototype, '_deriveTopologyConfigArgs').returns(CONFIG_ARGS);
-      sinonSandbox.stub(TopologyServer.prototype, 'purge').resolves();
-      sinonSandbox.stub(TopologyServer.prototype, 'discover').resolves();
-
-      // reconstruct after the stubbing
-      sandbox = new Sandbox();
-    });
-
-
-    it('resolves a Topology', () => {
-      return sandbox._deriveTopology()
-      .then((topology) => {
-        expect(topology).to.be.instanceOf(TopologyServer);
-        expect(topology.options).to.deep.equal(OPTIONS);
-        expect(topology.clientOptions).to.equal(CLIENT_OPTIONS);
-
-        expect(topology.purge.callCount).to.equal(1);
-        expect(topology.discover.callCount).to.equal(1);
-      });
-    });
-
-    it('purges the Topology', () => {
-      return sandbox._deriveTopology()
-      .then((topology) => {
-        expect(topology.purge.callCount).to.equal(1);
-      });
-    });
-
-    it('fails to purge the Topology', () => {
-      TopologyServer.prototype.purge.restore();
-      sinonSandbox.stub(TopologyServer.prototype, 'purge').rejects(new Error('BOOM'));
-
-      return sandbox._deriveTopology()
-      .then(assert.fail, (err) => {
-        expect(err.message).to.equal('BOOM');
-
-        expect(TopologyServer.prototype.purge.callCount).to.equal(1);
-      });
-    });
-
-    it('discoveres the Topology', () => {
-      return sandbox._deriveTopology()
-      .then((topology) => {
-        expect(topology.discover.callCount).to.equal(1);
-      });
     });
   });
 
