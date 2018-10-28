@@ -16,15 +16,6 @@ const Sandbox = require('../../lib/sandbox');
 const portUtils = require('../../lib/port');
 const topologyServer = require('../../lib/topology-server');
 
-// stubbable skeleton vs. a pure Mock;
-//   we also need the named constant for #isRunning purposes
-const TOPOLOGY = {
-  /* eslint-disable no-empty-function */
-  start() { },
-  stop() { },
-  purge() { },
-  /* eslint-enable no-empty-function */
-};
 
 const NOW = 1234567890000;
 const DELAY = 50; // first multiple of 7 beyond 50
@@ -36,6 +27,22 @@ const PORT = 23;
 const DATABASE = 'DATABASE';
 const URL = 'mongodb://HOST:23/DATABASE';
 const MONGOD_BIN_PATH = 'MONGOD_BIN_PATH';
+
+// stubbable skeleton vs. a pure Mock;
+//   we also need the named constant for #isRunning purposes
+const TOPOLOGY = {
+  options: Object.freeze({
+    bind_ip: 'BIND_IP',
+    port: PORT,
+    dbpath: 'DBPATH',
+  }),
+  /* eslint-disable no-empty-function */
+  start() { },
+  stop() { },
+  purge() { },
+  /* eslint-enable no-empty-function */
+};
+
 
 function _ensureRunningSandbox(sandbox) {
   sandbox._topology = TOPOLOGY;
@@ -139,15 +146,26 @@ describe('Sandbox', () => {
       sandbox = new Sandbox({
         host: HOST,
         database: DATABASE,
+        downloadDir: '/DOWNLOAD/DIR',
       });
       sandbox._topology = TOPOLOGY;
       sandbox._port = PORT;
 
       expect(sandbox.config).to.deep.equal({
+        url: URL,
         host: HOST,
         database: DATABASE,
-        port: PORT,
-        url: URL,
+        downloadDir: '/DOWNLOAD/DIR/mongodb-download',
+        daemons: [
+          // direct from the Topology, which we are mocking here;
+          //   IRL, the `host` and `bind_ip`s would match, etc.
+          {
+            bind_ip: 'BIND_IP',
+            port: PORT,
+            dbpath: 'DBPATH',
+            url: 'mongodb://BIND_IP:23/DATABASE',
+          },
+        ],
       });
     });
 
@@ -156,11 +174,30 @@ describe('Sandbox', () => {
       sandbox._topology = TOPOLOGY;
       sandbox._port = PORT; // Topology + port go hand-in-hand
 
+      // a winfinit module hierarchy
+      sandbox._mongoBins = {
+        mongoDBPrebuilt: {
+          mongoDBDownload: {
+            getDownloadDir() { return '/getDownloadDir'; }
+          }
+        },
+      };
+
       expect(sandbox.config).to.deep.equal({
+        url: 'mongodb://127.0.0.1:23/mongodb-sandbox',
         host: '127.0.0.1',
         database: 'mongodb-sandbox',
-        port: PORT,
-        url: 'mongodb://127.0.0.1:23/mongodb-sandbox',
+        downloadDir: '/getDownloadDir',
+        daemons: [
+          // direct from the Topology, which we are mocking here;
+          //   IRL, the `host` and `bind_ip`s would match, etc.
+          {
+            bind_ip: 'BIND_IP',
+            port: PORT,
+            dbpath: 'DBPATH',
+            url: 'mongodb://BIND_IP:23/mongodb-sandbox',
+          },
+        ],
       });
     });
   });

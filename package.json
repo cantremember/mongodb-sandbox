@@ -25,7 +25,8 @@
     "lint": "eslint lib/ test/",
     "lock": "npm install --package-lock-only",
     "preversion": "npm run ci  &&  npm run jsdoc",
-    "test": "mocha 'test/bootstrap.js' 'test/**/*.test.js' --recursive --ui bdd --reporter spec --timeout 5000"
+    "test": "mocha 'test/bootstrap.js' 'test/**/*.test.js' --recursive --ui bdd --reporter spec --timeout 5000",
+    "test-unit": "TEST_SCOPE=unit  npm run test"
   },
   "repository": {
     "type": "git",

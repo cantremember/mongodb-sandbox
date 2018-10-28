@@ -47,7 +47,7 @@ sandbox.start()
 ```
 
 
-A script to install the latest version of MongoDB to back a Sandbox,
+A script to install the latest version of MongoDB to back a [Sandbox](#Sandbox),
 out-of-band from your Test Suite.
 
 ```javascript
@@ -63,13 +63,13 @@ installSandbox()
 
 ## Options
 
-The configuration properties themselves are documented in [Sandbox.options](#Sandbox.options).
+Configuration properties are documented in [Sandbox.options](#Sandbox.options).
 
-Beyond the properties a [Sandbox](#Sandbox) leverages internally,
+In addition to the properties a [Sandbox](#Sandbox) recognizes,
 the you may provide any options passed to a `MongoDBDownload` instance
-from the [mongodb-download](https://github.com/winfinit/mongodb-download) module.
+(from the [mongodb-download](https://github.com/winfinit/mongodb-download) module).
 
-The most useful of those properties are:
+Several useful properties are:
 
 - `version` - a specific MongoDB version, eg. '3.4.2';
   *default* = 'latest'
@@ -176,7 +176,7 @@ A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Sui
 * [Sandbox](#Sandbox)
     * [sandbox.options](#Sandbox+options)
     * [sandbox.isRunning](#Sandbox+isRunning) : <code>Boolean</code>
-    * [sandbox.config](#Sandbox+config) : <code>Object</code>
+    * [sandbox.config](#Sandbox+config) : [<code>config</code>](#Sandbox.config)
     * [sandbox.start()](#Sandbox+start) ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
     * [sandbox.stop()](#Sandbox+stop) ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
     * [sandbox.install()](#Sandbox+install) ⇒ [<code>Promise.&lt;Sandbox&gt;</code>](#Sandbox)
@@ -186,6 +186,7 @@ A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Sui
     * [sandbox.client()](#Sandbox+client) ⇒ <code>Promise.&lt;MongoClient&gt;</code>
     * [sandbox.newClient()](#Sandbox+newClient) ⇒ <code>Promise.&lt;MongoClient&gt;</code>
     * [Sandbox.options](#Sandbox.options) : <code>Object</code>
+    * [Sandbox.config](#Sandbox.config) : <code>Object</code>
 
 <a name="Sandbox+options"></a>
 
@@ -205,13 +206,8 @@ The configuration options passed to the constructor.
 **Kind**: instance property of [<code>Sandbox</code>](#Sandbox)  
 <a name="Sandbox+config"></a>
 
-### sandbox.config : <code>Object</code>
+### sandbox.config : [<code>config</code>](#Sandbox.config)
 Configuration properties for connecting to the MongoDB Topology backing a running Sandbox.
-
-- host
-- port
-- database
-- url
 
 **Kind**: instance property of [<code>Sandbox</code>](#Sandbox)  
 **Throws**:
@@ -274,15 +270,15 @@ The Connections backing all returned Clients will be closed automatically upon `
 <a name="Sandbox.options"></a>
 
 ### Sandbox.options : <code>Object</code>
-Configuration options for constructing a Sandbox.
+Options for constructing a Sandbox.
 
 Beyond the properties called out below,
-the you may provide any options passed to a `MongoDBDownload` instance
+you may provide any options passed to a `MongoDBDownload` instance
 from the [mongodb-download](https://github.com/winfinit/mongodb-download) module,
 eg. `{ version, downloadDir }`, etc.
 
 **Kind**: static typedef of [<code>Sandbox</code>](#Sandbox)  
-**See**: {Object} https://github.com/cantremember/mongodb-sandbox/JSDOC.md#options  
+**See**: [Options](https://github.com/cantremember/mongodb-sandbox/JSDOC.md#options)  
 **Properties**
 
 - host <code>String</code> - an alternate `bind_ip` for the `mongod` Daemon, eg. '0.0.0.0';
@@ -294,6 +290,23 @@ eg. `{ version, downloadDir }`, etc.
 - minimumUptimeMs <code>Number</code> - the minimum amount of time that the Topology should be left running,
   in milliseconds;
   *default* = 0ms  
+
+<a name="Sandbox.config"></a>
+
+### Sandbox.config : <code>Object</code>
+Configuration available from a running Sandbox.
+
+`port` is not exposed at the top level; look for that in the entries within `daemons`.
+
+**Kind**: static typedef of [<code>Sandbox</code>](#Sandbox)  
+**Properties**
+
+- host <code>String</code> - the host where the Sandbox is listening  
+- database <code>String</code> - the name of the Sandbox database to be used for testing  
+- daemons <code>Array.&lt;Object&gt;</code> - an Array of `mongod` daemon options,
+  one for each MongoDB Server which backs the Sandbox,
+  providing (at least) `{ bind_ip, port, dbpath, url }`  
+- url <code>String</code> - a MongoDB connection URL for the MongoDB Topology  
 
 <a name="createSandbox"></a>
 
