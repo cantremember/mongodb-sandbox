@@ -9,22 +9,26 @@ Launch a stand-alone MongoDB Topology for use within a Test Suite.
 
 
 Embed a [Lifecycle](#Lifecycle) into the [mocha](https://github.com/mochajs/mocha) Test Framework,
-backed by MongoDB 3.4.2 [Sandbox](#Sandbox) installed to a location re-usable across multiple Test Suite executions.
+backed by a MongoDB 3.4.2 [Sandbox](#Sandbox).
 
-> A more flushed-out version of this Example can be found in the [README](./README.md#an-example).
+> A variant of this Example, as well as examples for other Test Frameworks,
+> can be found in the [README](./README.md#examples).
 
 ```javascript
 const { createSandbox } = require('@cantremember/mongodb-sandbox');
 
-
-const lifecycle = createSandbox({
+const sandbox = createSandbox({
   version: '3.4.2',
-}).lifecycle();
+});
 
-before(lifecycle.beforeAll);
-beforeEach(lifecycle.beforeEach);
-afterEach(lifecycle.afterEach);
-after(lifecycle.afterAll);
+before(function() {
+  const lifecycle = sandbox.lifecycle(this);
+
+  before(lifecycle.beforeAll);
+  beforeEach(lifecycle.beforeEach);
+  afterEach(lifecycle.afterEach);
+  after(lifecycle.afterAll);
+});
 ```
 
 

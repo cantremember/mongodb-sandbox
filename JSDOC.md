@@ -9,22 +9,26 @@ Launch a stand-alone MongoDB Topology for use within a Test Suite.
 
 
 Embed a [Lifecycle](#Lifecycle) into the [mocha](https://github.com/mochajs/mocha) Test Framework,
-backed by MongoDB 3.4.2 [Sandbox](#Sandbox) installed to a location re-usable across multiple Test Suite executions.
+backed by a MongoDB 3.4.2 [Sandbox](#Sandbox).
 
-> A more flushed-out version of this Example can be found in the [README](./README.md#an-example).
+> A variant of this Example, as well as examples for other Test Frameworks,
+> can be found in the [README](./README.md#examples).
 
 ```javascript
 const { createSandbox } = require('@cantremember/mongodb-sandbox');
 
-
-const lifecycle = createSandbox({
+const sandbox = createSandbox({
   version: '3.4.2',
-}).lifecycle();
+});
 
-before(lifecycle.beforeAll);
-beforeEach(lifecycle.beforeEach);
-afterEach(lifecycle.afterEach);
-after(lifecycle.afterAll);
+before(function() {
+  const lifecycle = sandbox.lifecycle(this);
+
+  before(lifecycle.beforeAll);
+  beforeEach(lifecycle.beforeEach);
+  afterEach(lifecycle.afterEach);
+  after(lifecycle.afterAll);
+});
 ```
 
 
@@ -296,17 +300,19 @@ eg. `{ version, downloadDir }`, etc.
 ### Sandbox.config : <code>Object</code>
 Configuration available from a running Sandbox.
 
-`port` is not exposed at the top level; look for that in the entries within `daemons`.
+`port` is not exposed at the top level;
+rather, it is exposed from the `mongod` option entries within `daemons`.
 
 **Kind**: static typedef of [<code>Sandbox</code>](#Sandbox)  
 **Properties**
 
+- url <code>String</code> - a MongoDB connection URL for the MongoDB Topology  
 - host <code>String</code> - the host where the Sandbox is listening  
 - database <code>String</code> - the name of the Sandbox database to be used for testing  
+- downloadDir <code>String</code> - the directory where the MongoDB binaries have been installed  
 - daemons <code>Array.&lt;Object&gt;</code> - an Array of `mongod` daemon options,
   one for each MongoDB Server which backs the Sandbox,
   providing (at least) `{ bind_ip, port, dbpath, url }`  
-- url <code>String</code> - a MongoDB connection URL for the MongoDB Topology  
 
 <a name="createSandbox"></a>
 
