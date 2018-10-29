@@ -64,6 +64,21 @@ describe('Lifecycle', () => {
       lifecycle.afterEach.call(THAT);
       lifecycle.afterAll.call(THAT);
     });
+
+    it('adjusts the Test Framework context', () => {
+      sinonSandbox.stub(INSTANCE_CONTEXT, 'timeout');
+
+      // reconstruct after the stubbing
+      lifecycle = new Lifecycle(sandboxMock.object, INSTANCE_CONTEXT);
+
+      expect(INSTANCE_CONTEXT.timeout.callCount).to.equal(1);
+    });
+
+    it('is fine without a Test Framework context', () => {
+      expect(() => {
+        return new Lifecycle(sandboxMock.object);
+      }).to.not.throw();
+    });
   });
 
 
@@ -91,7 +106,7 @@ describe('Lifecycle', () => {
       });
     });
 
-    it('uses the Test Framework context passed to it', () => {
+    it('adjusts the Test Framework context', () => {
       sinonSandbox.stub(INSTANCE_CONTEXT, 'timeout');
       sinonSandbox.stub(PASSED_CONTEXT, 'timeout');
 
@@ -99,17 +114,6 @@ describe('Lifecycle', () => {
       .then(() => {
         expect(INSTANCE_CONTEXT.timeout.callCount).to.equal(0);
         expect(PASSED_CONTEXT.timeout.callCount).to.equal(1);
-      });
-    });
-
-    it('uses the Test Framework context from the instance', () => {
-      sinonSandbox.stub(INSTANCE_CONTEXT, 'timeout');
-      sinonSandbox.stub(PASSED_CONTEXT, 'timeout');
-
-      return lifecycle.beforeAll()
-      .then(() => {
-        expect(INSTANCE_CONTEXT.timeout.callCount).to.equal(1);
-        expect(PASSED_CONTEXT.timeout.callCount).to.equal(0);
       });
     });
 
