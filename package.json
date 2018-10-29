@@ -1,5 +1,5 @@
 {
-  "name": "@cantremember/mongodb-sandbox",
+  "name": "mongodb-sandbox",
   "version": "0.1.0",
   "description": "Launch a stand-alone MongoDB Topology for use within a Test Suite.",
   "publishConfig": {
@@ -24,7 +24,7 @@
     "jsdoc": "jsdoc2md --configure .jsdoc2md.json > JSDOC.md",
     "lint": "eslint lib/ test/",
     "lock": "npm install --package-lock-only",
-    "preversion": "npm run ci  &&  npm run jsdoc",
+    "preversion": "npm run lock  &&  npm run jsdoc  &&  npm run ci",
     "test": "mocha 'test/bootstrap.js' 'test/**/*.test.js' --recursive --ui bdd --reporter spec --timeout 5000",
     "test-unit": "TEST_SCOPE=unit  npm run test"
   },

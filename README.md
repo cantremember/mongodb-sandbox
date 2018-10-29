@@ -16,7 +16,7 @@ participating in its lifecycle hooks;
 ## Installation
 
 ```bash
-npm install --save-dev @cantremember/mongodb-sandbox
+npm install --save-dev mongodb-sandbox
 ```
 
 This module supports Node.js 6.x and above.
@@ -65,7 +65,7 @@ and then register the rest of the hooks into the Framework.
 ```javascript
 const { expect } = require('chai');
 const { MongoClient } = require('mongodb');
-const { createSandbox } = require('@cantremember/mongodb-sandbox');
+const { createSandbox } = require('mongodb-sandbox');
 
 
 const sandbox = createSandbox();

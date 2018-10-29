@@ -15,7 +15,7 @@ backed by a MongoDB 3.4.2 [Sandbox](#Sandbox).
 > can be found in the [README](./README.md#examples).
 
 ```javascript
-const { createSandbox } = require('@cantremember/mongodb-sandbox');
+const { createSandbox } = require('mongodb-sandbox');
 
 const sandbox = createSandbox({
   version: '3.4.2',
@@ -35,7 +35,7 @@ before(function() {
 Programatically create, start and stop a MongoDB 3.6.8 [Sandbox](#Sandbox)
 
 ```javascript
-const { createSandbox } = require('@cantremember/mongodb-sandbox');
+const { createSandbox } = require('mongodb-sandbox');
 
 const sandbox = createSandbox({
   version: '3.6.8',
@@ -56,7 +56,7 @@ out-of-band from your Test Suite.
 
 ```javascript
 #!/usr/bin/env node
-const { installSandbox } = require('@cantremember/mongodb-sandbox');
+const { installSandbox } = require('mongodb-sandbox');
 
 installSandbox()
 .then((sandbox) => {
