@@ -44,7 +44,8 @@
     "mongodb": "^3.1.6",
     "mongodb-prebuilt": "^6.3.6",
     "mongodb-topology-manager": "^2.1.0",
-    "portfinder": "^1.0.17"
+    "portfinder": "^1.0.17",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
