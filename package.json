@@ -1,6 +1,6 @@
 {
   "name": "mongodb-sandbox",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Launch a stand-alone MongoDB Topology for use within a Test Suite.",
   "publishConfig": {
     "access": "public"
