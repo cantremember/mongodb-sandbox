@@ -2,7 +2,7 @@
 
 Launch a stand-alone MongoDB Topology for use within a Test Suite.
 
-  [![Build status][travis-img]][travis-url]
+  [![Build status][githubactions-img]][githubactions-url]
   [![License][license-img]][license-url]
 
 
@@ -183,7 +183,7 @@ So *that's* why.
 WTFPL.  Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
 
 
-[travis-img]: https://img.shields.io/travis/cantremember/mongodb-sandbox.svg?style=flat-square
-[travis-url]: https://travis-ci.org/cantremember/mongodb-sandbox
+[githubactions-img]: https://github.com/cantremember/mongodb-sandbox/workflows/CI/badge.svg
+[githubactions-url]: https://github.com/cantremember/mongodb-sandbox/actions
 [license-img]: https://img.shields.io/badge/license-WTFPL-blue.svg?style=flat-square
 [license-url]: http://www.wtfpl.net/

@@ -1,0 +1,38 @@
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+# https://docs.github.com/en/free-pro-team@latest/actions/guides/building-and-testing-nodejs
+
+name: CI
+
+on: [ push ]
+
+jobs:
+  build-and-test:
+    name: "Build and Test"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version:
+          # - 6
+          - 8
+          - 10
+          - 12
+          - 14
+      max-parallel: 2
+      fail-fast: false
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Use Node ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: "${{ matrix.node-version }}"
+        check-latest: true
+
+    - name: Install
+      run: "npm install"
+
+    - name: CI
+      run: "npm run ci"
