@@ -109,6 +109,8 @@ Several useful properties are:
 A simple encapsulation of methods for a Test Framework lifecycle.
 
 **Kind**: global class  
+**Params**: [<code>Sandbox</code>](#Sandbox) sandbox  
+**Params**: <code>Object</code> [context] an instance of the Test Framework context  
 
 * [Lifecycle](#Lifecycle)
     * [lifecycle.sandbox](#Lifecycle+sandbox)
@@ -176,6 +178,7 @@ To be invoked at the **end** of the global Test Framework lifecycle.
 A Sandbox that launches a stand-alone MongoDB Topology for use within a Test Suite.
 
 **Kind**: global class  
+**Params**: [<code>options</code>](#Sandbox.options) [options] Sandbox configuration options  
 
 * [Sandbox](#Sandbox)
     * [sandbox.options](#Sandbox+options)
